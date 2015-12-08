@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -77,7 +76,7 @@ func main() {
 				time.Now().Format(time.RFC3339), // timestamp
 				res.URL, // target URL
 				fmt.Sprintf("%0.3f", res.Dur.Seconds()), // duration
-				strconv.FormatBool(res.Status)})         // status check
+				res.StatusText()})                       // status check
 			w.Flush()
 			if err != nil {
 				log.Fatal(err)
@@ -85,8 +84,8 @@ func main() {
 		}
 
 		// Write plain text console log
-		msg := fmt.Sprintf("%s in %s, pass=%s\n",
-			res.URL, res.Dur, strconv.FormatBool(res.Status))
+		msg := fmt.Sprintf("%s status=%s in %s\n",
+			res.URL, res.StatusText(), res.Dur)
 		log.Print(msg)
 	}
 }

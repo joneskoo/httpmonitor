@@ -24,11 +24,22 @@ func (r Request) String() string {
 
 // Result from a HTTP status check
 type Result struct {
-	URL          string        // URL we fetched
-	Dur          time.Duration // Duration it took to fetch it
-	Status       bool          // Status check pass (true)/fail (false)
-	StatusReason string        // Optional description for failure
-	Error        error
+	URL    string        // URL we fetched
+	Dur    time.Duration // Duration it took to fetch it
+	Status bool          // Status check pass (true)/fail (false)
+	Error  error
+}
+
+// StatusText is the pass/fail/unreachable status for check
+func (r Result) StatusText() (status string) {
+	if r.Error != nil {
+		status = "unreachable"
+	} else if r.Status {
+		status = "pass"
+	} else {
+		status = "fail"
+	}
+	return
 }
 
 // FetchSingleURL retrieves a single URL based on configuration structure
