@@ -58,6 +58,7 @@ func FetchSingleURL(req Request) (res Result) {
 	resp, err := client.Get(req.URL)
 	if err != nil {
 		log.Print("Request failed: ", err)
+		res.Dur = time.Since(requestStartTime)
 		res.Error = err // Store to result
 		return
 	}
@@ -67,7 +68,6 @@ func FetchSingleURL(req Request) (res Result) {
 	pass, err := checker.DoCheck(resp, req.Checks)
 	if err != nil {
 		log.Print("Check failed: ", err)
-		return
 	}
 	res.Status = pass
 	res.Dur = time.Since(requestStartTime)
