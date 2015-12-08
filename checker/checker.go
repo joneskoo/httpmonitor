@@ -1,6 +1,15 @@
 package checker
 
-import "net/http"
+import (
+	"bytes"
+	"io"
+	"io/ioutil"
+	"net/http"
+)
+
+// BodySizeLimit is the number of bytes of body to read
+// when checking rules for body content
+const BodySizeLimit = 64 * 1024
 
 // Check defines what is required for test to pass
 type Check struct {
@@ -18,9 +27,16 @@ func DoCheck(resp *http.Response, checks []Check) (pass bool, err error) {
 	for _, ck := range checks {
 		switch ck.Type {
 		case "contains":
-			// if string(resp.StatusCode) != ck.Value {
-			// 	pass = false
-			// }
+			lr := io.LimitReader(resp.Body, BodySizeLimit)
+			bodyBytes, e := ioutil.ReadAll(lr)
+			if e != nil {
+				pass = false
+				return
+			}
+			if !bytes.Contains(bodyBytes, []byte(ck.Value.(string))) {
+				pass = false
+				return
+			}
 		case "status":
 			if resp.StatusCode != int(ck.Value.(float64)) {
 				pass = false
