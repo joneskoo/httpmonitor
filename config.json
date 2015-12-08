@@ -1,0 +1,21 @@
+{
+    "Version": 1,
+    "Monitor": [
+        {
+            "URL": "http://localhost:8000/",
+            "Timeout": 200000000,
+            "Interval": 200000000,
+            "Checks": [
+                {
+                    "Type": "contains",
+                    "Value": "Directory listing for"
+                },
+                {
+                    "Type": "status",
+                    "Value": 200
+                }
+            ]
+        }
+    ],
+    "HTTP": "127.0.0.1:3131"
+}
