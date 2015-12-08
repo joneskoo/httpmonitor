@@ -2,10 +2,11 @@ package fetcher
 
 import (
 	"fmt"
-	"httpmonitor/checker"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/joneskoo/httpmonitor/checker"
 )
 
 // Request configuration for what to check

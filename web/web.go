@@ -2,11 +2,12 @@ package web
 
 import (
 	"html/template"
-	"httpmonitor/fetcher"
 	"log"
 	"net/http"
 	"sort"
 	"sync"
+
+	"github.com/joneskoo/httpmonitor/fetcher"
 )
 
 // protects statusMap

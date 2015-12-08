@@ -4,12 +4,13 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"httpmonitor/fetcher"
-	"httpmonitor/web"
 	"io/ioutil"
 	"log"
 	"os"
 	"time"
+
+	"github.com/joneskoo/httpmonitor/fetcher"
+	"github.com/joneskoo/httpmonitor/web"
 )
 
 func usage() {
