@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"httpmonitor/fetcher"
+	"httpmonitor/web"
 	"io/ioutil"
 	"log"
 	"os"
@@ -67,6 +68,12 @@ func main() {
 	// Start result fetching and get channel
 	resultChannel := fetcher.FetchUrls(conf.Monitor)
 
+	// Start HTTP server for checking current status
+	webChannel := make(chan fetcher.Result)
+	if conf.HTTP != "" {
+		web.StartListening(conf.HTTP, webChannel)
+	}
+
 	for { // Process stream of results
 		res := <-resultChannel
 
@@ -87,5 +94,10 @@ func main() {
 		msg := fmt.Sprintf("%s status=%s in %s\n",
 			res.URL, res.StatusText(), res.Dur)
 		log.Print(msg)
+
+		// Update status to status web server
+		if conf.HTTP != "" {
+			webChannel <- res
+		}
 	}
 }

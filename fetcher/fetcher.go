@@ -30,6 +30,10 @@ type Result struct {
 	Error  error
 }
 
+func (r Result) String() string {
+	return fmt.Sprintf("%s %s in %s", r.URL, r.StatusText(), r.Dur)
+}
+
 // StatusText is the pass/fail/unreachable status for check
 func (r Result) StatusText() (status string) {
 	if r.Error != nil {
