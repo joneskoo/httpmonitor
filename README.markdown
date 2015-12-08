@@ -49,8 +49,9 @@ contains the following columns:
 * status (pass/fail/unreachable)
 * Response time (in milliseconds)
 
-There is a built in HTTP server. To enable it, set "HTTP" in configuration
-to a string "IP:port" to set which address to bind the server to.
+There is a built in HTTP server for checking the current status.
+To enable it, set "HTTP" in configuration to a string "IP:port" to set
+which address to bind the server to.
 
 ## Design goals ##
 
