@@ -1,10 +1,8 @@
 # HTTP Monitor #
 
-Copyright 2015 Joonas Kuorilehto. License: MIT-style.
-
-This program that monitors web servers for availability.
-It's intended for web server administrators to use to
-monitor their service.
+HTTP monitor (naming is hard) is a tool to monitor for HTTP service
+availability. It supports concurrent monitoring of a number of targets
+and basic checks of the response for expected data.
 
 Example configuration:
 
@@ -17,14 +15,8 @@ Example configuration:
       "Timeout": 200,
       "Interval": 200,
       "Checks": [
-        {
-          "Type": "contains",
-          "Value": "Directory listing for"
-        },
-        {
-          "Type": "status",
-          "Value": "200"
-        }
+        {"Type": "contains", "Value": "Directory listing for"},
+        {"Type": "status",   "Value": "200"}
       ]
     }
   ],
