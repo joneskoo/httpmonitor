@@ -1,0 +1,11 @@
+[
+    {
+        "URL": "http://www.example.com/",
+        "Timeout": 2.0,
+        "Interval": 2.0,
+        "Checks": [
+            {"BodyContains": "Example Domain"},
+            {"StatusCode": 200}
+        ]
+    }
+]

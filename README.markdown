@@ -4,34 +4,30 @@ HTTP monitor (naming is hard) is a tool to monitor for HTTP service
 availability. It supports concurrent monitoring of a number of targets
 and basic checks of the response for expected data.
 
-Example configuration:
+Example target configuration:
 
 ```json
-{
-  "Version": 1,
-  "Monitor": [
+[
     {
-      "URL": "http://localhost:8000/",
-      "Timeout": 1.0,
-      "Interval": 1.0,
-      "Checks": [
-          {"BodyContains": "Directory listing for"},
-          {"StatusCode": 200}
-      ]
+        "URL": "http://localhost:8000/",
+        "Timeout": 1.0,
+        "Interval": 1.0,
+        "Checks": [
+            {"BodyContains": "Directory listing for"},
+            {"StatusCode": 200}
+        ]
     }
-  ],
-  "HTTP": "127.0.0.1:3131"
-}
+]
 ```
 
 Timeout and Interval are specified in seconds.
 
 The HTTP monitor supports the following status checks:
 
-Type     | Value (for check to pass)
----------|-------------------------------------
-contains | String that must be in the HTTP body
-status   | Acceptable HTTP status code
+Type         | Value (for check to pass)
+-------------|-------------------------------------
+BodyContains | String that must be in the HTTP body
+StatusCode   | Acceptable HTTP status code
 
 There is a built in HTTP server for checking the current status.
 To enable it, set "HTTP" in configuration to a string "IP:port" to set
