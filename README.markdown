@@ -8,15 +8,17 @@ Example target configuration:
 
 ```json
 [
-    {
-        "URL": "http://localhost:8000/",
-        "Timeout": 1.0,
-        "Interval": 1.0,
-        "Checks": [
-            {"BodyContains": "Directory listing for"},
-            {"StatusCode": 200}
-        ]
-    }
+  {
+    "URL": "http://localhost:8000/",
+    "Timeout": 1,
+    "Interval": 1,
+    "Checks": [
+      {
+        "BodyContains": "Directory listing for",
+        "StatusCode": 200
+      }
+    ]
+  }
 ]
 ```
 
