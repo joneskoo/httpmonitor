@@ -29,7 +29,7 @@ func (r Request) PollIntervalDuration() time.Duration {
 }
 
 func (r Request) String() string {
-	return fmt.Sprintf("<GET '%s' every %s timeout=%s (%d checks)>",
+	return fmt.Sprintf("GET '%v' every %v timeout=%v (%v checks)>",
 		r.URL, r.PollIntervalDuration(), r.TimeoutDuration(), len(r.Checks))
 }
 
@@ -42,7 +42,7 @@ type Result struct {
 }
 
 func (r Result) String() string {
-	return fmt.Sprintf("%s %s in %s", r.URL, r.StatusText(), r.Dur)
+	return fmt.Sprintf("%v %v in %v", r.URL, r.StatusText(), r.Dur)
 }
 
 // StatusText is the pass/fail/unreachable status for check

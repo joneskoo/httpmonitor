@@ -43,7 +43,7 @@ func main() {
 	log.Print("HTTP listen address: ", conf.HTTP)
 	log.Print("Monitor targets:")
 	for _, target := range conf.Monitor {
-		log.Print("  ", target)
+		log.Print(" ", target)
 	}
 
 	// Start result fetching and get channel
@@ -58,7 +58,7 @@ func main() {
 	for { // Process stream of results
 		res := <-resultChannel
 		// Write plain text console log
-		msg := fmt.Sprintf("%s status=%s in %s\n",
+		msg := fmt.Sprintf("%v status=%v in %v\n",
 			res.URL, res.StatusText(), res.Dur)
 		log.Print(msg)
 
