@@ -37,7 +37,7 @@ func (r Request) String() string {
 type Result struct {
 	URL        string        // URL we fetched
 	Dur        time.Duration // Duration it took to fetch it
-	Status     bool          // Status check pass (true)/fail (false)
+	Passed     bool          // Status check pass (true)/fail (false)
 	Error      error         // URL fetching error
 	HTTPStatus int           // Response HTTP status code
 }
@@ -50,7 +50,7 @@ func (r Result) String() string {
 func (r Result) StatusText() (status string) {
 	if r.Error != nil {
 		status = "unreachable"
-	} else if r.Status {
+	} else if r.Passed {
 		status = "passed"
 	} else {
 		status = "failed"
@@ -62,7 +62,7 @@ func (r Result) StatusText() (status string) {
 func (r Result) StatusEmoji() string {
 	if r.Error != nil {
 		return "💤"
-	} else if r.Status {
+	} else if r.Passed {
 		return "✅"
 	} else {
 		return "❌"
@@ -98,7 +98,7 @@ func FetchSingleURL(req Request) (res Result) {
 	if err != nil {
 		log.Print("Check failed: ", err)
 	}
-	res.Status = pass
+	res.Passed = pass
 	res.Dur = time.Since(requestStartTime)
 	return
 }
