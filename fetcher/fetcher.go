@@ -11,16 +11,26 @@ import (
 
 // Request configuration for what to check
 type Request struct {
-	URL      string          // URL we fetch
-	Timeout  time.Duration   // How long before we timeout and abort a request
-	Interval time.Duration   // At what rate we send requests (for loop)
+	URL      string          // URL to fetch
+	Timeout  float32         // Request timeout, seconds
+	Interval float32         // Poll interval, seconds
 	Checks   []checker.Check // List of checks for status 'pass'
 	Error    error
 }
 
+// TimeoutDuration returns the request timeout as time.Duration
+func (r Request) TimeoutDuration() time.Duration {
+	return time.Duration(r.Timeout * 1e9)
+}
+
+// PollIntervalDuration returns the poll interval as time.Duration
+func (r Request) PollIntervalDuration() time.Duration {
+	return time.Duration(r.Interval * 1e9)
+}
+
 func (r Request) String() string {
 	return fmt.Sprintf("<GET '%s' every %s timeout=%s (%d checks)>",
-		r.URL, r.Interval, r.Timeout, len(r.Checks))
+		r.URL, r.PollIntervalDuration(), r.TimeoutDuration(), len(r.Checks))
 }
 
 // Result from a HTTP status check
@@ -56,7 +66,7 @@ func FetchSingleURL(req Request) (res Result) {
 
 	// Configure timeout
 	client := http.Client{
-		Timeout: req.Timeout,
+		Timeout: req.TimeoutDuration(),
 	}
 
 	// Perform HTTP GET request
@@ -87,7 +97,7 @@ func FetchUrls(requests []Request) chan Result {
 		// Start fetch in background and put the result
 		// into channel when it is done.
 		go func(req Request) {
-			for range time.Tick(req.Interval) {
+			for range time.Tick(req.PollIntervalDuration()) {
 				res := FetchSingleURL(req)
 				c <- res
 			}

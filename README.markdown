@@ -12,8 +12,8 @@ Example configuration:
   "Monitor": [
     {
       "URL": "http://localhost:8000/",
-      "Timeout": 200,
-      "Interval": 200,
+      "Timeout": 1.0,
+      "Interval": 1.0,
       "Checks": [
         {"Type": "contains", "Value": "Directory listing for"},
         {"Type": "status",   "Value": "200"}
@@ -25,7 +25,7 @@ Example configuration:
 }
 ```
 
-Timeout and Interval are specified in units of nanoseconds.
+Timeout and Interval are specified in seconds.
 
 The HTTP monitor supports the following status checks:
 
