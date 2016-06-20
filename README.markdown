@@ -15,7 +15,8 @@ Example target configuration:
     "Checks": [
       {
         "BodyContains": "Directory listing for",
-        "StatusCode": 200
+        "StatusCode": 200,
+        "BodyRegEx": "Hello!?"
       }
     ]
   }
@@ -30,6 +31,7 @@ Type         | Value (for check to pass)
 -------------|-------------------------------------
 BodyContains | String that must be in the HTTP body
 StatusCode   | Acceptable HTTP status code
+BodyRegEx    | [Regular expression][regex] match to body content
 
 There is a built in HTTP server for checking the current status.
 To enable it, set "HTTP" in configuration to a string "IP:port" to set
@@ -42,3 +44,5 @@ and to make this utility reusable in various contexts
 and environments, this application was implemented in
 [Go](https://golang.org/). The Go language is exceptionally
 well suited for concurrent tasks.
+
+[regex]: https://golang.org/pkg/regexp/ "Go package regexp documentation"

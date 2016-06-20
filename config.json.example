@@ -9,7 +9,7 @@
         "StatusCode": 200
       },
       {
-        "BodyContains": "other string"
+        "BodyRegEx": "Hello!?"
       }
     ]
   }

@@ -6,16 +6,20 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 )
+
+const kB = 1024
 
 // BodySizeLimit is the number of bytes of body to read
 // when checking rules for body content
-const BodySizeLimit = 64 * 1024
+const BodySizeLimit = 64 * kB
 
 // Check defines what is required for test to pass
 type Check struct {
 	StatusCode   int    // HTTP status code must be...
 	BodyContains string // Response body must contain
+	BodyRegEx    string // Regular expression to match body
 }
 
 // DoCheck processes all configured checks for a HTTP response.
@@ -23,18 +27,31 @@ type Check struct {
 func DoCheck(resp *http.Response, checks []Check) (passed bool, err error) {
 	statusChecked := false
 
+	// Read body bytes to memory
+	var bodyBytes []byte
+	lr := io.LimitReader(resp.Body, BodySizeLimit)
+	bodyBytes, err = ioutil.ReadAll(lr)
+	if err != nil {
+		return false, err
+	}
+
 	// Go through all checks. If any check fails, return immediately.
 	for _, ck := range checks {
 		// Check body contents
 		if ck.BodyContains != "" {
-			var bodyBytes []byte
-			lr := io.LimitReader(resp.Body, BodySizeLimit)
-			bodyBytes, err = ioutil.ReadAll(lr)
+			if !bytes.Contains(bodyBytes, []byte(ck.BodyContains)) {
+				return false, nil
+			}
+		}
+
+		if ck.BodyRegEx != "" {
+			var matched bool
+			matched, err = regexp.Match(ck.BodyRegEx, bodyBytes)
 			if err != nil {
 				return false, err
 			}
-			if !bytes.Contains(bodyBytes, []byte(ck.BodyContains)) {
-				return false, nil
+			if !matched {
+				return false, fmt.Errorf("Body did not match %v", ck.BodyRegEx)
 			}
 		}
 
