@@ -11,6 +11,14 @@ import (
 	"github.com/joneskoo/httpmonitor/web"
 )
 
+// Config file format
+type Config struct {
+	Version int
+	Monitor []fetcher.Request
+	Log     string
+	HTTP    string
+}
+
 func usage() {
 	log.Fatal("Usage: httpmonitor <CONFIG>")
 }
@@ -18,13 +26,6 @@ func usage() {
 // Get list of URIs from command line and time how long
 // it takes to retrieve them all concurrently
 func main() {
-	// Configure
-	type Config struct {
-		Version int
-		Monitor []fetcher.Request
-		Log     string
-		HTTP    string
-	}
 	var conf Config
 	if len(os.Args) != 2 {
 		usage()
