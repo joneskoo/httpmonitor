@@ -35,10 +35,11 @@ func (r Request) String() string {
 
 // Result from a HTTP status check
 type Result struct {
-	URL    string        // URL we fetched
-	Dur    time.Duration // Duration it took to fetch it
-	Status bool          // Status check pass (true)/fail (false)
-	Error  error
+	URL        string        // URL we fetched
+	Dur        time.Duration // Duration it took to fetch it
+	Status     bool          // Status check pass (true)/fail (false)
+	Error      error         // URL fetching error
+	HTTPStatus int           // Response HTTP status code
 }
 
 func (r Result) String() string {
@@ -89,6 +90,7 @@ func FetchSingleURL(req Request) (res Result) {
 		res.Error = err // Store to result
 		return
 	}
+	res.HTTPStatus = resp.StatusCode
 	defer resp.Body.Close() // Close body to free connection after done
 
 	// Run checks

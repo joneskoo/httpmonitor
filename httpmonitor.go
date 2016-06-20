@@ -59,8 +59,8 @@ func main() {
 	for { // Process stream of results
 		res := <-resultChannel
 		// Write plain text console log
-		msg := fmt.Sprintf("%v  %v in %v\n",
-			res.StatusEmoji(), res.URL, res.Dur)
+		msg := fmt.Sprintf("%v  %v %v in %v\n",
+			res.StatusEmoji(), res.HTTPStatus, res.URL, res.Dur)
 		log.Print(msg)
 
 		// Update status to status web server
