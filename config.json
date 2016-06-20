@@ -6,8 +6,8 @@
             "Timeout": 2.0,
             "Interval": 2.0,
             "Checks": [
-                {"Type": "contains", "Value": "Directory listing for"},
-                {"Type": "status",   "Value": 200}
+                {"BodyContains": "Directory listing for"},
+                {"StatusCode": 200}
             ]
         }
     ],

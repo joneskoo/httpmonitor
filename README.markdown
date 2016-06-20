@@ -15,8 +15,8 @@ Example configuration:
       "Timeout": 1.0,
       "Interval": 1.0,
       "Checks": [
-        {"Type": "contains", "Value": "Directory listing for"},
-        {"Type": "status",   "Value": "200"}
+          {"BodyContains": "Directory listing for"},
+          {"StatusCode": 200}
       ]
     }
   ],
