@@ -20,7 +20,6 @@ Example configuration:
       ]
     }
   ],
-  "Log": "checks.csv",
   "HTTP": "127.0.0.1:3131"
 }
 ```
@@ -33,13 +32,6 @@ Type     | Value (for check to pass)
 ---------|-------------------------------------
 contains | String that must be in the HTTP body
 status   | Acceptable HTTP status code
-
-The log is written in CSV format with header. The log
-contains the following columns:
-
-* URL checked
-* status (pass/fail/unreachable)
-* Response time (in milliseconds)
 
 There is a built in HTTP server for checking the current status.
 To enable it, set "HTTP" in configuration to a string "IP:port" to set

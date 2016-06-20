@@ -1,13 +1,11 @@
 package main
 
 import (
-	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
-	"time"
 
 	"github.com/joneskoo/httpmonitor/fetcher"
 	"github.com/joneskoo/httpmonitor/web"
@@ -48,24 +46,6 @@ func main() {
 		log.Print("  ", target)
 	}
 
-	// Open CSV and write CSV header
-	var w *csv.Writer
-	if conf.Log != "" {
-		file, err := os.Create(conf.Log)
-		if err != nil {
-			log.Fatal("Can't create log file: ", err)
-		}
-		defer file.Close()
-
-		w = csv.NewWriter(file)
-		w.Write([]string{
-			"timestamp",
-			"target URL",
-			"response time",
-			"status check"})
-		w.Flush()
-	}
-
 	// Start result fetching and get channel
 	resultChannel := fetcher.FetchUrls(conf.Monitor)
 
@@ -77,20 +57,6 @@ func main() {
 
 	for { // Process stream of results
 		res := <-resultChannel
-
-		// Write CSV log output
-		if conf.Log != "" {
-			err := w.Write([]string{
-				time.Now().Format(time.RFC3339), // timestamp
-				res.URL, // target URL
-				fmt.Sprintf("%0.3f", res.Dur.Seconds()), // duration
-				res.StatusText()})                       // status check
-			w.Flush()
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
-
 		// Write plain text console log
 		msg := fmt.Sprintf("%s status=%s in %s\n",
 			res.URL, res.StatusText(), res.Dur)
