@@ -50,11 +50,23 @@ func (r Result) StatusText() (status string) {
 	if r.Error != nil {
 		status = "unreachable"
 	} else if r.Status {
-		status = "pass"
+		status = "passed"
 	} else {
-		status = "fail"
+		status = "failed"
 	}
 	return
+}
+
+// StatusEmoji is the pass/fail/unreachable as an emoji symbol
+func (r Result) StatusEmoji() string {
+	if r.Error != nil {
+		return "💤"
+	} else if r.Status {
+		return "✅"
+	} else {
+		return "❌"
+	}
+
 }
 
 // FetchSingleURL retrieves a single URL based on configuration structure
