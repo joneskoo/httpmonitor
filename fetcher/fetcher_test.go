@@ -22,6 +22,7 @@ func forbiddenHandler(w http.ResponseWriter, r *http.Request) {
 func TestFetchChecks(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(successHandler))
 	defer ts.Close()
+	t.Logf("Server returns HTTP 200 with body '%v'", successBodyContent)
 
 	// Test cases for HTTP 200 OK with simple text response
 	cases := []struct {
@@ -30,6 +31,7 @@ func TestFetchChecks(t *testing.T) {
 	}{
 		// No checks (default) should pass
 		{[]Check{}, true},
+		{[]Check{{}}, true},
 		// Body check should find strings
 		{[]Check{{BodyContains: "Hello"}}, true},
 		{[]Check{{BodyRegEx: ".ello"}}, true},
@@ -50,6 +52,7 @@ func TestFetchChecks(t *testing.T) {
 		{[]Check{{BodyContains: "Hello", StatusCode: 200, BodyRegEx: "H.{4}o"}}, false},
 	}
 	for _, c := range cases {
+		t.Logf("%#v (want passed=%v)", c.in, c.want)
 		res := FetchSingleURL(Target{
 			URL:      ts.URL,
 			Timeout:  0.1,
@@ -58,12 +61,13 @@ func TestFetchChecks(t *testing.T) {
 		})
 		got := res.Passed
 		if got != c.want {
-			t.Errorf("Check: %#v Expected pass=%v, got pass=%v. Server returned body: %#v", c.in, c.want, got, successBodyContent)
+			t.Errorf("Expected pass=%v, got pass=%v", c.want, got)
 		}
 	}
 
 	// Test cases for error status
 	ts.Config.Handler = http.HandlerFunc(forbiddenHandler)
+	t.Log("Server returns HTTP 403 with body 'Forbidden'")
 	cases = []struct {
 		in   []Check
 		want bool
@@ -76,6 +80,7 @@ func TestFetchChecks(t *testing.T) {
 		{[]Check{{StatusCode: 403, BodyContains: "Forbidden"}}, true},
 	}
 	for _, c := range cases {
+		t.Logf("%#v (want passed=%v)", c.in, c.want)
 		res := FetchSingleURL(Target{
 			URL:      ts.URL,
 			Timeout:  0.1,
@@ -84,7 +89,7 @@ func TestFetchChecks(t *testing.T) {
 		})
 		got := res.Passed
 		if got != c.want {
-			t.Errorf("Check: %#v Expected pass=%v, got pass=%v. Server returned error Forbidden", c.in, c.want, got)
+			t.Errorf("Check: %#v Expected pass=%v, got pass=%v", c.in, c.want, got)
 		}
 	}
 
