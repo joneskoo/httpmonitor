@@ -47,7 +47,7 @@ func main() {
 	}
 
 	// Parse targets file as JSON
-	var targets []fetcher.Request
+	var targets []fetcher.Target
 	err = json.Unmarshal(file, &targets)
 	if err != nil {
 		log.Fatal("Failed to parse JSON in config: ", err)

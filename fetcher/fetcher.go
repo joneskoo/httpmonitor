@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-// Request configuration for what to check
-type Request struct {
+// Target configuration for what to check
+type Target struct {
 	URL      string  // URL to fetch
 	Timeout  float32 // Request timeout, seconds
 	Interval float32 // Poll interval, seconds
@@ -16,16 +16,16 @@ type Request struct {
 }
 
 // TimeoutDuration returns the request timeout as time.Duration
-func (r Request) TimeoutDuration() time.Duration {
+func (r Target) TimeoutDuration() time.Duration {
 	return time.Duration(r.Timeout * 1e9)
 }
 
 // PollIntervalDuration returns the poll interval as time.Duration
-func (r Request) PollIntervalDuration() time.Duration {
+func (r Target) PollIntervalDuration() time.Duration {
 	return time.Duration(r.Interval * 1e9)
 }
 
-func (r Request) String() string {
+func (r Target) String() string {
 	return fmt.Sprintf("GET '%v' every %v timeout=%v (%v checks)>",
 		r.URL, r.PollIntervalDuration(), r.TimeoutDuration(), len(r.Checks))
 }
@@ -68,8 +68,8 @@ func (r Result) StatusEmoji() string {
 }
 
 // FetchSingleURL retrieves a single URL based on configuration structure
-// Request and returns a response structure Result.
-func FetchSingleURL(req Request) (res Result) {
+// Target and returns a response structure Result.
+func FetchSingleURL(req Target) (res Result) {
 	res = Result{URL: req.URL}
 	// Time how long it takes
 	requestStartTime := time.Now()
@@ -99,17 +99,17 @@ func FetchSingleURL(req Request) (res Result) {
 
 // FetchUrls fetches a list of URLs all concurrently in goroutines
 // and immediately return a channel streaming Result objects.
-func FetchUrls(requests []Request) chan Result {
+func FetchUrls(targets []Target) chan Result {
 	c := make(chan Result)
-	for _, req := range requests {
+	for _, t := range targets {
 		// Start fetch in background and put the result
 		// into channel when it is done.
-		go func(req Request) {
-			for range time.Tick(req.PollIntervalDuration()) {
-				res := FetchSingleURL(req)
+		go func(t Target) {
+			for range time.Tick(t.PollIntervalDuration()) {
+				res := FetchSingleURL(t)
 				c <- res
 			}
-		}(req)
+		}(t)
 	}
 	// Immediately return the channel where results will arrive
 	return c

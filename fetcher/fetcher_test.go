@@ -50,7 +50,7 @@ func TestFetchChecks(t *testing.T) {
 		{[]Check{{BodyContains: "Hello", StatusCode: 200, BodyRegEx: "H.{4}o"}}, false},
 	}
 	for _, c := range cases {
-		res := FetchSingleURL(Request{
+		res := FetchSingleURL(Target{
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
@@ -76,7 +76,7 @@ func TestFetchChecks(t *testing.T) {
 		{[]Check{{StatusCode: 403, BodyContains: "Forbidden"}}, true},
 	}
 	for _, c := range cases {
-		res := FetchSingleURL(Request{
+		res := FetchSingleURL(Target{
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
@@ -95,7 +95,7 @@ func BenchmarkCheckNothing(b *testing.B) {
 	defer ts.Close()
 
 	for i := 0; i < b.N; i++ {
-		FetchSingleURL(Request{
+		FetchSingleURL(Target{
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
@@ -110,7 +110,7 @@ func BenchmarkCheckStatus(b *testing.B) {
 	defer ts.Close()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		FetchSingleURL(Request{
+		FetchSingleURL(Target{
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
@@ -125,7 +125,7 @@ func BenchmarkCheckBodyContains(b *testing.B) {
 	defer ts.Close()
 
 	for i := 0; i < b.N; i++ {
-		FetchSingleURL(Request{
+		FetchSingleURL(Target{
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
@@ -140,7 +140,7 @@ func BenchmarkCheckStatusAndBody(b *testing.B) {
 	defer ts.Close()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		FetchSingleURL(Request{
+		FetchSingleURL(Target{
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
@@ -159,7 +159,7 @@ func BenchmarkCheckBodyRegEx(b *testing.B) {
 	defer ts.Close()
 
 	for i := 0; i < b.N; i++ {
-		FetchSingleURL(Request{
+		FetchSingleURL(Target{
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
