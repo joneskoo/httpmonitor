@@ -1,7 +1,6 @@
 package fetcher
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -25,11 +24,6 @@ func (r Target) PollIntervalDuration() time.Duration {
 	return time.Duration(r.Interval * 1e9)
 }
 
-func (r Target) String() string {
-	return fmt.Sprintf("GET '%v' every %v timeout=%v (%v checks)>",
-		r.URL, r.PollIntervalDuration(), r.TimeoutDuration(), len(r.Checks))
-}
-
 // Result from a HTTP status check
 type Result struct {
 	URL        string        // URL we fetched
@@ -37,10 +31,6 @@ type Result struct {
 	Passed     bool          // Status check pass (true)/fail (false)
 	Error      error         // URL fetching error
 	HTTPStatus int           // Response HTTP status code
-}
-
-func (r Result) String() string {
-	return fmt.Sprintf("%v %v in %v", r.URL, r.StatusText(), r.Dur)
 }
 
 // StatusText is the pass/fail/unreachable status for check
