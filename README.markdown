@@ -4,7 +4,7 @@ HTTP monitor (naming is hard) is a tool to monitor for HTTP service
 availability. It supports concurrent monitoring of a number of targets
 and basic checks of the response for expected data.
 
-[![Travis-CI build status](https://travis-ci.org/joneskoo/httpmonitor.svg?branch=master)](https://travis-ci.org/joneskoo/)
+[![Travis-CI build status](https://travis-ci.org/joneskoo/httpmonitor.svg?branch=master)](https://travis-ci.org/joneskoo/httpmonitor)
 [![codecov](https://codecov.io/gh/joneskoo/httpmonitor/branch/master/graph/badge.svg)](https://codecov.io/gh/joneskoo/httpmonitor)
 
 Example target configuration:
