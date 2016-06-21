@@ -4,16 +4,14 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/joneskoo/httpmonitor/checker"
 )
 
 // Request configuration for what to check
 type Request struct {
-	URL      string          // URL to fetch
-	Timeout  float32         // Request timeout, seconds
-	Interval float32         // Poll interval, seconds
-	Checks   []checker.Check // List of checks for status 'pass'
+	URL      string  // URL to fetch
+	Timeout  float32 // Request timeout, seconds
+	Interval float32 // Poll interval, seconds
+	Checks   []Check // List of checks for status 'pass'
 	Error    error
 }
 
@@ -92,7 +90,7 @@ func FetchSingleURL(req Request) (res Result) {
 	defer resp.Body.Close() // Close body to free connection after done
 
 	// Run checks
-	pass, err := checker.DoCheck(resp, req.Checks)
+	pass, err := DoCheck(resp, req.Checks)
 	res.Error = err
 	res.Passed = pass
 	res.Dur = time.Since(requestStartTime)

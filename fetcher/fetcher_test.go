@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/joneskoo/httpmonitor/checker"
 )
 
 const successBodyContent = "Hello, client"
@@ -27,29 +25,29 @@ func TestFetchChecks(t *testing.T) {
 
 	// Test cases for HTTP 200 OK with simple text response
 	cases := []struct {
-		in   []checker.Check
+		in   []Check
 		want bool
 	}{
 		// No checks (default) should pass
-		{[]checker.Check{}, true},
+		{[]Check{}, true},
 		// Body check should find strings
-		{[]checker.Check{{BodyContains: "Hello"}}, true},
-		{[]checker.Check{{BodyRegEx: ".ello"}}, true},
-		{[]checker.Check{{BodyRegEx: "H.{3}o"}}, true},
-		{[]checker.Check{{BodyRegEx: ".allo"}}, false},
-		{[]checker.Check{{BodyContains: "client"}}, true},
-		{[]checker.Check{{BodyContains: "Client"}}, false},
+		{[]Check{{BodyContains: "Hello"}}, true},
+		{[]Check{{BodyRegEx: ".ello"}}, true},
+		{[]Check{{BodyRegEx: "H.{3}o"}}, true},
+		{[]Check{{BodyRegEx: ".allo"}}, false},
+		{[]Check{{BodyContains: "client"}}, true},
+		{[]Check{{BodyContains: "Client"}}, false},
 		// Check status code check
-		{[]checker.Check{{StatusCode: 200}}, true},
-		{[]checker.Check{{StatusCode: 201}}, false},
+		{[]Check{{StatusCode: 200}}, true},
+		{[]Check{{StatusCode: 201}}, false},
 		// Many checks together
-		{[]checker.Check{{BodyContains: "Hello", StatusCode: 200}}, true},
-		{[]checker.Check{{BodyContains: "hello", StatusCode: 200}}, false},
-		{[]checker.Check{{BodyContains: "Hello", StatusCode: 201}}, false},
-		{[]checker.Check{{BodyContains: "hello", StatusCode: 201}}, false},
-		{[]checker.Check{{BodyContains: "Hello", StatusCode: 200, BodyRegEx: "H.{3}o"}}, true},
-		{[]checker.Check{{BodyContains: "hello", StatusCode: 200, BodyRegEx: "H.{3}o"}}, false},
-		{[]checker.Check{{BodyContains: "Hello", StatusCode: 200, BodyRegEx: "H.{4}o"}}, false},
+		{[]Check{{BodyContains: "Hello", StatusCode: 200}}, true},
+		{[]Check{{BodyContains: "hello", StatusCode: 200}}, false},
+		{[]Check{{BodyContains: "Hello", StatusCode: 201}}, false},
+		{[]Check{{BodyContains: "hello", StatusCode: 201}}, false},
+		{[]Check{{BodyContains: "Hello", StatusCode: 200, BodyRegEx: "H.{3}o"}}, true},
+		{[]Check{{BodyContains: "hello", StatusCode: 200, BodyRegEx: "H.{3}o"}}, false},
+		{[]Check{{BodyContains: "Hello", StatusCode: 200, BodyRegEx: "H.{4}o"}}, false},
 	}
 	for _, c := range cases {
 		res := FetchSingleURL(Request{
@@ -67,15 +65,15 @@ func TestFetchChecks(t *testing.T) {
 	// Test cases for error status
 	ts.Config.Handler = http.HandlerFunc(forbiddenHandler)
 	cases = []struct {
-		in   []checker.Check
+		in   []Check
 		want bool
 	}{
-		{[]checker.Check{}, false},
-		{[]checker.Check{{BodyContains: "Hello"}}, false},
-		{[]checker.Check{{BodyContains: "Forbidden"}}, false},
-		{[]checker.Check{{StatusCode: 200}}, false},
-		{[]checker.Check{{StatusCode: 403}}, true},
-		{[]checker.Check{{StatusCode: 403, BodyContains: "Forbidden"}}, true},
+		{[]Check{}, false},
+		{[]Check{{BodyContains: "Hello"}}, false},
+		{[]Check{{BodyContains: "Forbidden"}}, false},
+		{[]Check{{StatusCode: 200}}, false},
+		{[]Check{{StatusCode: 403}}, true},
+		{[]Check{{StatusCode: 403, BodyContains: "Forbidden"}}, true},
 	}
 	for _, c := range cases {
 		res := FetchSingleURL(Request{
@@ -101,7 +99,7 @@ func BenchmarkCheckNothing(b *testing.B) {
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
-			Checks:   []checker.Check{{}},
+			Checks:   []Check{{}},
 		})
 
 	}
@@ -116,7 +114,7 @@ func BenchmarkCheckStatus(b *testing.B) {
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
-			Checks:   []checker.Check{{StatusCode: 200}},
+			Checks:   []Check{{StatusCode: 200}},
 		})
 
 	}
@@ -131,7 +129,7 @@ func BenchmarkCheckBodyContains(b *testing.B) {
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
-			Checks:   []checker.Check{{BodyContains: "Hello"}},
+			Checks:   []Check{{BodyContains: "Hello"}},
 		})
 
 	}
@@ -146,7 +144,7 @@ func BenchmarkCheckStatusAndBody(b *testing.B) {
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
-			Checks: []checker.Check{
+			Checks: []Check{
 				{
 					StatusCode:   200,
 					BodyContains: "Hello",
@@ -165,7 +163,7 @@ func BenchmarkCheckBodyRegEx(b *testing.B) {
 			URL:      ts.URL,
 			Timeout:  0.1,
 			Interval: 0.001,
-			Checks:   []checker.Check{{BodyRegEx: "Hell."}},
+			Checks:   []Check{{BodyRegEx: "Hell."}},
 		})
 
 	}
