@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -14,9 +15,66 @@ func successHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, successBodyContent)
 }
 
-// HTTP 200 ok with simple text body
+// HTTP 403 error handler
 func forbiddenHandler(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Forbidden", http.StatusForbidden)
+}
+
+func TestFetchUrls(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(successHandler))
+	defer ts.Close()
+	t.Logf("Server returns HTTP 200 with body '%v'", successBodyContent)
+
+	// Test cases for HTTP 200 OK with simple text response
+	cases := [][]Target{
+		// Positive test one target
+		{
+			{
+				URL: ts.URL + "/pass", Timeout: 0.1, Interval: 0.001,
+				Checks: []Check{},
+			},
+		},
+
+		// Positive test two targets
+		{
+			{
+				URL: ts.URL + "/pass", Timeout: 0.1, Interval: 0.001,
+				Checks: []Check{},
+			},
+			{
+				URL: ts.URL + "/pass", Timeout: 0.1, Interval: 0.001,
+				Checks: []Check{},
+			},
+		},
+
+		// Negative test two targets, one fails check (expect 403 but get 200)
+		{
+			{
+				URL: ts.URL + "/pass", Timeout: 0.1, Interval: 0.001,
+				Checks: []Check{},
+			},
+			{
+				URL: ts.URL + "/fail", Timeout: 0.1, Interval: 0.001,
+				Checks: []Check{{StatusCode: 403}},
+			},
+		},
+	}
+	for _, c := range cases {
+		t.Logf("%#v", c)
+		res := FetchUrls(c)
+		for range c {
+			var want bool
+			got := <-res
+			if strings.Contains(got.URL, "pass") {
+				want = true
+			} else {
+				want = false
+			}
+			if got.Passed != want {
+				t.Errorf("Expected pass=%v, got pass=%v", want, got.Passed)
+			}
+		}
+	}
 }
 
 func TestFetchChecks(t *testing.T) {
@@ -35,6 +93,8 @@ func TestFetchChecks(t *testing.T) {
 		// Body check should find strings
 		{[]Check{{BodyContains: "Hello"}}, true},
 		{[]Check{{BodyRegEx: ".ello"}}, true},
+		{[]Check{{BodyRegEx: "["}}, false}, // Failing regexp
+		{[]Check{{BodyRegEx: "?"}}, false}, // Failing regexp
 		{[]Check{{BodyRegEx: "H.{3}o"}}, true},
 		{[]Check{{BodyRegEx: ".allo"}}, false},
 		{[]Check{{BodyContains: "client"}}, true},
