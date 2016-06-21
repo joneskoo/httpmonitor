@@ -40,12 +40,27 @@ There is a built in HTTP server for checking the current status.
 To enable it, set "HTTP" in configuration to a string "IP:port" to set
 which address to bind the server to.
 
+## Installing and quick start ##
+
+Assuming [Go][go] has been installed, and [GOPATH][gopath] is set up:
+
+    $ go get github.com/joneskoo/httpmonitor
+    $ $GOPATH/bin/httpmonitor
+    Usage: httpmonitor [OPTIONS] config.json
+      -bind string
+        	bind address for HTTP server (e.g. '127.0.0.1:8000', default disabled)
+
+Create a taget configuration file like the example above and set up
+what to monitor, then launch. Optionally you may enable the HTTP interface.
+
 ## Design goals ##
 
 Since the number of monitored servers depends on the application,
 and to make this utility reusable in various contexts
 and environments, this application was implemented in
-[Go](https://golang.org/). The Go language is exceptionally
+[Go][go]. The Go language is exceptionally
 well suited for concurrent tasks.
 
+[go]: https://golang.org/ "Go programming language"
 [regex]: https://golang.org/pkg/regexp/ "Go package regexp documentation"
+[gopath]: https://golang.org/doc/code.html#GOPATH "Setting up GOPATH"
