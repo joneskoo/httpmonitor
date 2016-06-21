@@ -91,3 +91,82 @@ func TestFetchChecks(t *testing.T) {
 	}
 
 }
+
+func BenchmarkCheckNothing(b *testing.B) {
+	ts := httptest.NewServer(http.HandlerFunc(successHandler))
+	defer ts.Close()
+
+	for i := 0; i < b.N; i++ {
+		FetchSingleURL(Request{
+			URL:      ts.URL,
+			Timeout:  0.1,
+			Interval: 0.001,
+			Checks:   []checker.Check{{}},
+		})
+
+	}
+}
+
+func BenchmarkCheckStatus(b *testing.B) {
+	ts := httptest.NewServer(http.HandlerFunc(successHandler))
+	defer ts.Close()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		FetchSingleURL(Request{
+			URL:      ts.URL,
+			Timeout:  0.1,
+			Interval: 0.001,
+			Checks:   []checker.Check{{StatusCode: 200}},
+		})
+
+	}
+}
+
+func BenchmarkCheckBodyContains(b *testing.B) {
+	ts := httptest.NewServer(http.HandlerFunc(successHandler))
+	defer ts.Close()
+
+	for i := 0; i < b.N; i++ {
+		FetchSingleURL(Request{
+			URL:      ts.URL,
+			Timeout:  0.1,
+			Interval: 0.001,
+			Checks:   []checker.Check{{BodyContains: "Hello"}},
+		})
+
+	}
+}
+
+func BenchmarkCheckStatusAndBody(b *testing.B) {
+	ts := httptest.NewServer(http.HandlerFunc(successHandler))
+	defer ts.Close()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		FetchSingleURL(Request{
+			URL:      ts.URL,
+			Timeout:  0.1,
+			Interval: 0.001,
+			Checks: []checker.Check{
+				{
+					StatusCode:   200,
+					BodyContains: "Hello",
+				}},
+		})
+
+	}
+}
+
+func BenchmarkCheckBodyRegEx(b *testing.B) {
+	ts := httptest.NewServer(http.HandlerFunc(successHandler))
+	defer ts.Close()
+
+	for i := 0; i < b.N; i++ {
+		FetchSingleURL(Request{
+			URL:      ts.URL,
+			Timeout:  0.1,
+			Interval: 0.001,
+			Checks:   []checker.Check{{BodyRegEx: "Hell."}},
+		})
+
+	}
+}
